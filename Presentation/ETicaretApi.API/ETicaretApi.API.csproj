@@ -13,6 +13,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Core\ETicaretApi.Application\ETicaretApi.Application.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\ETicaretApi.Persistence\ETicaretApi.Persistence.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controllers\" />
   </ItemGroup>
 
 </Project>
