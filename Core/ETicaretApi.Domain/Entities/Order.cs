@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ETicaretApi.Domain
+namespace ETicaretApi.Domain.Entities
 {
-    public class Order:BaseEntity
+    public class Order : BaseEntity
     {
         public int customerId { get; set; }
         public string Description { get; set; }
