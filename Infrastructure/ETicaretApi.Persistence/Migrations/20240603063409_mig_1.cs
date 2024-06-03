@@ -74,14 +74,14 @@ namespace ETicaretApi.Persistence.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Orders_OrderId",
-                table: "Orders",
-                column: "OrderId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Orders_customerId1",
                 table: "Orders",
                 column: "customerId1");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_OrderId",
+                table: "Orders",
+                column: "OrderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_ProductId",
