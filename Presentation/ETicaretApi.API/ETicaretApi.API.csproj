@@ -20,8 +20,4 @@
     <ProjectReference Include="..\..\Infrastructure\ETicaretApi.Persistence\ETicaretApi.Persistence.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
 </Project>
