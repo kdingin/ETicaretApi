@@ -22,7 +22,7 @@ namespace ETicaretApi.Persistence.Contexts
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            //ChangeTracker: Entityler üzerinden yapılan değişikliklerin ya da yeni eklenen verinin yakalanmasını sağlayan propertydir. Update operasyonlarında Track edilen verileri yakalayıp elde etmemizi sağlar.
+            //ChangeTracker: It is the property that enables the capture of changes made on entities or newly added data. It allows us to capture and obtain the data tracked in Update operations.
             var datas = ChangeTracker.Entries<BaseEntity>();
             foreach (var data in datas) {
                 _ = data.State switch
