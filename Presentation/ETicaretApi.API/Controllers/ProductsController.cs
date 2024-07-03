@@ -102,7 +102,7 @@ namespace ETicaretApi.API.Controllers
             return Ok();
         }
 
-        [HttpPost("[action]")]
+        [HttpPost("[action]")]//[action] ifadesi methodun adı ne ise onu kullanır./api/controller/Upload
         public async Task<IActionResult> Upload()
         {
 
