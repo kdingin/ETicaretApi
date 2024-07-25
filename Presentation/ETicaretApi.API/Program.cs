@@ -1,13 +1,16 @@
 using ETicaretApi.Application.Validators.Products;
 using ETicaretApi.Infrastructure;
 using ETicaretApi.Infrastructure.Filters;
+using ETicaretApi.Infrastructure.Services.Storage.Local;
 using ETicaretApi.Persistence;
 using FluentValidation.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddPersistenceServices();
-builder.Services.AddInfrastructureServices();    
+builder.Services.AddInfrastructureServices();
+//builder.Services.AddStorage(StorageType.Azure);
+builder.Services.AddStorage<LocalStorage>();
 builder.Services.AddCors(options=>options.AddDefaultPolicy(policy=>
     policy.WithOrigins("http://localhost:4200", "https://localhost:4200").AllowAnyHeader().AllowAnyMethod()
 ));
