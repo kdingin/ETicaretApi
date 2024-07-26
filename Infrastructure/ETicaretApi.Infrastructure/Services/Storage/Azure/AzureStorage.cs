@@ -48,10 +48,10 @@ namespace ETicaretApi.Infrastructure.Services.Storage.Azure
             List<(string fileName, string pathOrContainerName)> datas = new();
             foreach (IFormFile file in files)
             {
-              string newNewFile= await FileRenameAsync(containerName, file.Name, HasFile);
-              BlobClient blobClient=  _blobContainerClient.GetBlobClient(newNewFile);
+              string fileNewName= await FileRenameAsync(containerName, file.Name, HasFile);
+              BlobClient blobClient=  _blobContainerClient.GetBlobClient(fileNewName);
               await  blobClient.UploadAsync(file.OpenReadStream());
-                datas.Add((newNewFile, containerName));
+                datas.Add((fileNewName, $"{containerName}/{fileNewName}"));
             }
             return datas;
            

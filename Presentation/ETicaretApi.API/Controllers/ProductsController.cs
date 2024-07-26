@@ -125,17 +125,19 @@ namespace ETicaretApi.API.Controllers
         }
 
         [HttpPost("[action]")]//[action] ifadesi methodun adı ne ise onu kullanır./api/controller/Upload
-        public async Task<IActionResult> Upload()
+        public async Task<IActionResult> Upload(string id)
         {
-           var datas= await  _storageService.UploadAsync("files", Request.Form.Files);   
-                 await  _fileWriteRepository.AddRangeAsync(datas.Select(d => new ETicaretApi.Domain.Entities.File()
-                  {
-                     FileName=d.fileName,
-                     Path = d.pathOrContainerName,
-                     Storage=_storageService.StorageName
+            List<(string fileName, string pathOrContainerName)> result =await  _storageService.UploadAsync("photo-images", Request.Form.Files);
 
-                  }).ToList());
-                  await _fileWriteRepository.SaveAsync();
+           Product product=await _productReadRepository.GetByIdAsync(id);
+          await  _productImageFileWriteRepository.AddRangeAsync(result.Select(r => new ProductImageFile
+            {
+                FileName = r.fileName,
+                Path = r.pathOrContainerName,
+                Storage=_storageService.StorageName,
+                Products= new List<Product>() {product}
+            }).ToList());
+            await _productImageFileWriteRepository.SaveAsync();
             return Ok();
         }
     }
