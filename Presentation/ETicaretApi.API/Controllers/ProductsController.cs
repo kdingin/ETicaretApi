@@ -1,6 +1,6 @@
 ﻿using ETicaretApi.Application.Abstractions.Storage;
-using ETicaretApi.Application.Features.Commands.CreateProduct;
-using ETicaretApi.Application.Features.Queries.GetAllProduct;
+using ETicaretApi.Application.Features.Commands.Product.CreateProduct;
+using ETicaretApi.Application.Features.Queries.Product.GetAllProduct;
 using ETicaretApi.Application.Repositories;
 using ETicaretApi.Application.RequestParameters;
 using ETicaretApi.Application.ViewModels.Products;
@@ -9,6 +9,7 @@ using ETicaretApi.Infrastructure.Services.Storage;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Net;
 
@@ -30,6 +31,7 @@ namespace ETicaretApi.API.Controllers
         readonly IInvoiceFileWriteRepository _invoiceFileWriteRepository;
         readonly IStorageService _storageService;
         readonly IMediator _mediator;
+        readonly IConfiguration _configuration;
         public ProductsController(
             IProductReadRepository productReadRepository,
             IProductWriteRepository productWriteRepository,
@@ -42,7 +44,8 @@ namespace ETicaretApi.API.Controllers
             IInvoiceFileReadRepository invoiceFileReadRepository,
             IInvoiceFileWriteRepository invoiceFileWriteRepository,
             IStorageService storageService,
-            IMediator mediator)
+            IMediator mediator,
+            IConfiguration configuration)
         {
             _productReadRepository = productReadRepository;
             _productWriteRepository = productWriteRepository;
@@ -56,6 +59,7 @@ namespace ETicaretApi.API.Controllers
             _invoiceFileWriteRepository = invoiceFileWriteRepository;
             _storageService = storageService;
             _mediator = mediator;
+            _configuration = configuration;
         }
 
         [HttpGet]
@@ -116,6 +120,38 @@ namespace ETicaretApi.API.Controllers
                 Products= new List<Product>() {product}
             }).ToList());
             await _productImageFileWriteRepository.SaveAsync();
+            return Ok();
+        }
+
+        [HttpGet("[action]/{id}")]
+        public async Task<IActionResult> GetProductImages(string id)
+        {
+         Product? product=  await  _productReadRepository.Table.Include(p => p.ProductImageFiles).FirstOrDefaultAsync(p => p.Id == Guid.Parse(id));
+            
+            return Ok(product.ProductImageFiles.Select(p => new
+            {
+                Path=$"{_configuration["BaseStorageUrl"]}/{p.Path}",
+                p.FileName,
+                p.Id
+            }));
+        }
+        [HttpDelete("[action]/{id}")]
+        public async Task<IActionResult> DeleteProductImage(string id, string imageId)
+        {
+            Product? product = await _productReadRepository.Table.Include(p => p.ProductImageFiles).FirstOrDefaultAsync(p => p.Id == Guid.Parse(id));
+            if (product == null)
+            {
+                return NotFound("Product not found.");
+            }
+
+            ProductImageFile productImageFile = product.ProductImageFiles.FirstOrDefault(p => p.Id == Guid.Parse(imageId));
+            if (productImageFile == null)
+            {
+                return NotFound("Image not found.");
+            }
+
+            product.ProductImageFiles.Remove(productImageFile);
+            await _productWriteRepository.SaveAsync();
             return Ok();
         }
     }
